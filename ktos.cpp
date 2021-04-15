@@ -905,7 +905,8 @@ int solveBoardStep(DoraResultArrayPointer *p_array, DoraConfig *config, int isMa
                                           new_dr->data->pfirePath = pf;
                                           memcpy(new_dr->data->pfirePath,fdr->data->pfirePath,sizeof(FirePath));
                                       }
-
+                                      if(fdr->path_count < 0)
+                                            std::cout <<"wrong"<<"\n";
                                       new_dr->weight = fdr->weight;
                                       new_dr->path_count = fdr->path_count;
                                       new_dr->isDone = 0;

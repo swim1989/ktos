@@ -78,8 +78,8 @@ struct DoraResultData {
     Combo combos[24];
     SOPoint initCursor;
     SOPoint nowCursor;
-    char board[48];
-    char dirs[80];
+   unsigned char board[48];
+    unsigned char dirs[80];
     char firstBatch;
     char Priority;
     char Weathering;
@@ -94,9 +94,9 @@ struct DoraResult
     DoraResultData *data;
     short weight;
     short final_weight;
-    char path_count;
+    unsigned char path_count;
     char isDone;
-    char combos_length;
+    unsigned char combos_length;
     char color_count;
     char pass_count;
 };

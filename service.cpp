@@ -56,10 +56,13 @@ std::string result2char(DoraResult *result){
             if(i !=result->combos_length -1)
                 ret.append("|");
     }
+    std::cout << result->path_count << std::endl;
     ret.append("#");
-    for(int i=0;i<result->path_count;i++){
+    char pathc =  result->path_count;
+    for(int i=0;i<pathc-'0';i++){
             ret.append(std::to_string(result->data->dirs[i]));
     }
+    //std::cout << result->path_count << std::endl;
     ret.append("#");
    // ret  = "#"+result.combos_length;
 
@@ -137,6 +140,8 @@ int main() {
                     int params[19];
                     int color_priority[24];                    
                     std::cout << "Put the Parameters"<<"\n";
+                     std::cout << cdata.c_str() <<"\n";
+
                     split(mdata[3],_idx,",");
                     std::cout << mdata[3] <<"\n";
                     split(mdata[4],_params,",");
@@ -157,6 +162,8 @@ int main() {
                     std::cout << "start run ..." << "\n";
                    p_array0  = kora_solve(p_array0,atoi(mdata[1].c_str()),atoi(mdata[2].c_str()),idx, params,color_priority,{});
                     std::cout << "Complete SOLVE"<<"\n";
+                    std::cout << printf("pathcount:%d",p_array0.ResultPointer[0].path_count)<<"\n";
+
                     std::string tmp = "solve_ok#"+std::to_string(p_array0.result_index)+"#";
                      char ret[tmp.size() + 1];
                     strcpy(ret, tmp.c_str());

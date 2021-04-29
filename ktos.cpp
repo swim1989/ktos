@@ -905,8 +905,6 @@ int solveBoardStep(DoraResultArrayPointer *p_array, DoraConfig *config, int isMa
                                           new_dr->data->pfirePath = pf;
                                           memcpy(new_dr->data->pfirePath,fdr->data->pfirePath,sizeof(FirePath));
                                       }
-                                      if(fdr->path_count < 0)
-                                            std::cout <<"wrong"<<"\n";
                                       new_dr->weight = fdr->weight;
                                       new_dr->path_count = fdr->path_count;
                                       new_dr->isDone = 0;
@@ -1061,6 +1059,8 @@ void solveBoard(char *mIdx,DoraConfig *config,DoraResultArrayPointer *p_array){
                     for(int point_idx=0; point_idx< config->flag_end_count; point_idx++){
                         if(config->endPoint[point_idx].x == p_array->ResultPointer[index].data->nowCursor.x &&config->endPoint[point_idx].y == p_array->ResultPointer[index].data->nowCursor.y){
                             p_array->ResultPointer[index].final_weight += 1000;
+                            p_array->ResultPointer[index].weight += 1000;
+
                         }
                     }
                 }
@@ -1203,6 +1203,8 @@ int solveBoardStep2(DoraResultArrayPointer *p_array, DoraConfig *config, int isM
 
                                       new_dr->weight = fdr->weight;
                                       new_dr->path_count = fdr->path_count;
+                                      if(new_dr->path_count>50)
+                                        int y = 99;
                                       new_dr->isDone = 0;
                                       new_dr->combos_length = 0;
                                       new_dr->weight = 0;
@@ -1378,7 +1380,7 @@ DoraResultArrayPointer kora_solve(DoraResultArrayPointer p_array0,int mCols, int
         config->PuzzleShield = 0;
         config->Complex_val = params0[1]>100?48000:480*params0[1];
     }else{
-        config->Complex_val = 480*params0[1]*4;
+        config->Complex_val = 480*params0[1] * 4;
     }
     int maxCombo = 0;
     for (int i = 0;i < 6;i++) {

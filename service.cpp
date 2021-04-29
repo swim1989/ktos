@@ -64,6 +64,7 @@ std::string result2char(DoraResult *result){
     unsigned char pathc =  result->path_count;
     for(int i=0;i<(int)pathc;i++){
             ret.append(std::to_string(result->data->dirs[i]));
+            std::cout << std::to_string(result->data->dirs[i]) << std::endl;
     }
     //std::cout << result->path_count << std::endl;
     ret.append("#");
@@ -165,9 +166,9 @@ int main() {
                     split(mdata[3],_idx,",");
                     std::cout << "== The IDX ==" <<"\n";
                     std::cout << mdata[3].substr(0,11) <<"\n";
-                    std::cout << mdata[3].substr(11,11) <<"\n";
+                    std::cout << mdata[3].substr(12,11) <<"\n";
                     std::cout << mdata[3].substr(22,11) <<"\n";
-                    std::cout << mdata[3].substr(33,11) <<"\n";
+                    std::cout << mdata[3].substr(34,11) <<"\n";
                     std::cout << mdata[3].substr(44,11) <<"\n";
                     split(mdata[4],_params,",");
                     std::cout << "== The Parameters ==" <<"\n";

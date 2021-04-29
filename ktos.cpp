@@ -926,7 +926,7 @@ int solveBoardStep(DoraResultArrayPointer *p_array, DoraConfig *config, int isMa
                                         new_dr->data->board[offset] = cur2;
 
                                       new_dr->data->board[next_offset] = cur1;
-                                      new_dr->data->dirs[(unsigned int)new_dr->path_count] = direction;
+                                      new_dr->data->dirs[(unsigned char)new_dr->path_count] = direction;
                                       new_dr->path_count = new_dr->path_count + 1;
                                       ret = findCombo(new_dr, config);
                                       if(config->flag_pass_count > 0){
@@ -1005,6 +1005,9 @@ void solveBoard(char *mIdx,DoraConfig *config,DoraResultArrayPointer *p_array){
                 resultData->initCursor = { p0.x,p0.y };
                 resultData->nowCursor = { p0.x,p0.y };
                 memcpy(&p_array->ResultPointer[p_array->result_index].data->board, mIdx, board_size);
+
+                p_array->ResultPointer[p_array->result_index].path_count = 0;
+                p_array->ResultPointer[p_array->result_index].pass_count = 0;
                 if (config->firePathSize > 0) {
                     p_array->firepath[p_array->result_index].fpath[config->COLS * p0.y + p0.x] = (char)(config->firePathSize - 1);
                 }
@@ -1024,6 +1027,9 @@ void solveBoard(char *mIdx,DoraConfig *config,DoraResultArrayPointer *p_array){
                     resultData->initCursor = { p0.x,p0.y };
                     resultData->nowCursor = { p0.x,p0.y };
                     memcpy(&p_array->ResultPointer[p_array->result_index].data->board, mIdx, board_size);
+                    //MODIFIED
+                    p_array->ResultPointer[p_array->result_index].path_count = 0;
+                     p_array->ResultPointer[p_array->result_index].pass_count = 0;
                     if (config->firePathSize > 0) {
                         p_array->firepath[p_array->result_index].fpath[config->COLS * p0.y + p0.x] = (char)(config->firePathSize - 1);
                     }

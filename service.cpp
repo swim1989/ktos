@@ -49,17 +49,20 @@ std::string result2char(DoraResult *result){
     ret.append(",");
     ret.append(std::to_string(result->data->initCursor.y));
     ret.append("#");
-    for(int i=0;i<result->combos_length;i++){
-            ret.append(std::to_string(result->data->combos[i].mGemType));
-            ret.append(std::to_string(result->data->combos[i].mGemCount));
-            ret.append(std::to_string(result->data->combos[i].mGemFlag));         
-            if(i !=result->combos_length -1)
-                ret.append("|");
+    if(result->combos_length>0 || result->data->combos[0].mGemCount>0)
+    {
+        for(int i=0;i<result->combos_length;i++){
+                ret.append(std::to_string(result->data->combos[i].mGemType));
+                ret.append(std::to_string(result->data->combos[i].mGemCount));
+                ret.append(std::to_string(result->data->combos[i].mGemFlag));         
+                if(i !=result->combos_length -1)
+                    ret.append("|");        
+        }
     }
-    std::cout << result->path_count << std::endl;
+    std::cout << (int)result->path_count << std::endl;
     ret.append("#");
-    char pathc =  result->path_count;
-    for(int i=0;i<pathc-'0';i++){
+    unsigned char pathc =  result->path_count;
+    for(int i=0;i<(int)pathc;i++){
             ret.append(std::to_string(result->data->dirs[i]));
     }
     //std::cout << result->path_count << std::endl;
@@ -73,6 +76,8 @@ std::string result2char(DoraResult *result){
 
 int main() {
     short port = 8199;
+    int nNetTimeout=6000;//6秒
+    time_t start_t, end_t;
 
     std::cout << "This is server" << std::endl;
     std::cout << "Port:";
@@ -105,6 +110,21 @@ int main() {
     struct sockaddr_in clientAddr;
     socklen_t clientAddrLen = sizeof(clientAddr);
 
+    //Socket KeepAlive setting
+    int TCP_KEEPIDLE = 0x4;
+    int TCP_KEEPINTVL = 0x5;
+    int TCP_KEEPCNT = 0x6;
+    int keepAlive = 1; //Keep Alive open
+    int keepIdle = 30; // idle time
+    int keepInterval = 5; 
+    int keepCount = 3; 
+    setsockopt(listenfd, SOL_SOCKET, SO_KEEPALIVE, (void *)&keepAlive, sizeof(keepAlive));
+    setsockopt(listenfd, IPPROTO_TCP, TCP_KEEPIDLE, (void*)&keepIdle, sizeof(keepIdle));
+    setsockopt(listenfd, IPPROTO_TCP, TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
+    setsockopt(listenfd,IPPROTO_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
+
+
+
     DoraResultArrayPointer p_array0;
     while (true) {
         std::cout << "Listening..." << std::endl;
@@ -120,14 +140,15 @@ int main() {
             memset(buf, 0, sizeof(buf));
             int len = recv(conn, buf, sizeof(buf), 0);
             buf[len] = '\0';
-            
+           if(len<1)
+                continue;
             std::string cdata(buf);
             if (strcmp(buf, "exit") == 0) { 
                 std::cout << "...Disconnect " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
                 break;
             }
             if(strcmp(cdata.substr(0,4).c_str(),"xtos") == 0) {
-                std::cout << "SHOW the client data" << "\n";
+                std::cout << "Get the client Parameters" << "\n";
                 std::vector<std::string> mdata;
                 split(cdata, mdata, "#");
                 if(strcmp(mdata[0].c_str(),"xtos_solve") == 0){
@@ -139,14 +160,20 @@ int main() {
                     int idx[30];
                     int params[19];
                     int color_priority[24];                    
-                    std::cout << "Put the Parameters"<<"\n";
-                     std::cout << cdata.c_str() <<"\n";
-
+                    std::cout << "=== Put the Parameters ==="<<"\n";
+                    //std::cout << cdata.c_str() <<"\n";
                     split(mdata[3],_idx,",");
-                    std::cout << mdata[3] <<"\n";
+                    std::cout << "== The IDX ==" <<"\n";
+                    std::cout << mdata[3].substr(0,11) <<"\n";
+                    std::cout << mdata[3].substr(11,11) <<"\n";
+                    std::cout << mdata[3].substr(22,11) <<"\n";
+                    std::cout << mdata[3].substr(33,11) <<"\n";
+                    std::cout << mdata[3].substr(44,11) <<"\n";
                     split(mdata[4],_params,",");
+                    std::cout << "== The Parameters ==" <<"\n";
                     std::cout << mdata[4] <<"\n";
                     split(mdata[5],_color_priority,",");
+                    std::cout << "== The Priority ==" <<"\n";
                     std::cout << mdata[5] <<"\n";
                     
                     for(int i=0;i<30;i++){
@@ -160,9 +187,14 @@ int main() {
                     }
                     
                     std::cout << "start run ..." << "\n";
-                   p_array0  = kora_solve(p_array0,atoi(mdata[1].c_str()),atoi(mdata[2].c_str()),idx, params,color_priority,{});
-                    std::cout << "Complete SOLVE"<<"\n";
-                    std::cout << printf("pathcount:%d",p_array0.ResultPointer[0].path_count)<<"\n";
+                    start_t = time(NULL);
+                    p_array0  = kora_solve(p_array0,atoi(mdata[1].c_str()),atoi(mdata[2].c_str()),idx, params,color_priority,{});
+                    end_t = time(NULL);
+                    double diff = difftime(end_t, start_t);
+                    
+                    std::cout << "Complete SOLVE"<<std::endl;
+                    std::cout<<printf("Spend time = %f",diff)<<std::endl;
+                    std::cout << (int)(p_array0.ResultPointer[0].path_count)<<"\n";
 
                     std::string tmp = "solve_ok#"+std::to_string(p_array0.result_index)+"#";
                      char ret[tmp.size() + 1];
@@ -176,6 +208,7 @@ int main() {
                     int jindex = atoi(mdata[1].c_str());
                     DoraResult *doraResult = &p_array0.ResultPointer[0]; 
                     std::string ret2 = result2char(doraResult);
+                     std::cout << "==== The Results is below  =====" <<"\n";   
                     std::cout << ret2 <<"\n";
                     char cstr[ret2.size() + 1];
                     strcpy(cstr, ret2.c_str());                    

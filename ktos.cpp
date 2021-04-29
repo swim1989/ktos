@@ -1008,6 +1008,9 @@ void solveBoard(char *mIdx,DoraConfig *config,DoraResultArrayPointer *p_array){
 
                 p_array->ResultPointer[p_array->result_index].path_count = 0;
                 p_array->ResultPointer[p_array->result_index].pass_count = 0;
+                p_array->ResultPointer[p_array->result_index].weight = 0;
+                p_array->ResultPointer[p_array->result_index].final_weight = 0;
+                p_array->ResultPointer[p_array->result_index].isDone = 0;
                 if (config->firePathSize > 0) {
                     p_array->firepath[p_array->result_index].fpath[config->COLS * p0.y + p0.x] = (char)(config->firePathSize - 1);
                 }
@@ -1030,6 +1033,9 @@ void solveBoard(char *mIdx,DoraConfig *config,DoraResultArrayPointer *p_array){
                     //MODIFIED
                     p_array->ResultPointer[p_array->result_index].path_count = 0;
                      p_array->ResultPointer[p_array->result_index].pass_count = 0;
+                     p_array->ResultPointer[p_array->result_index].weight = 0;
+                     p_array->ResultPointer[p_array->result_index].final_weight = 0;
+                     p_array->ResultPointer[p_array->result_index].isDone = 0;
                     if (config->firePathSize > 0) {
                         p_array->firepath[p_array->result_index].fpath[config->COLS * p0.y + p0.x] = (char)(config->firePathSize - 1);
                     }

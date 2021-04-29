@@ -59,7 +59,7 @@ std::string result2char(DoraResult *result){
                     ret.append("|");        
         }
     }
-    std::cout << (int)result->path_count << std::endl;
+    // std::cout << (int)result->path_count << std::endl;
     ret.append("#");
     unsigned char pathc =  result->path_count;
     if(result->data->combos[0].mGemCount>0)
@@ -131,14 +131,14 @@ int main() {
 
     DoraResultArrayPointer p_array0;
     while (true) {
-        std::cout << "Listening..." << std::endl;
+        std::cout << "***Listening..." << std::endl;
         conn = accept(listenfd, (struct sockaddr*)&clientAddr, &clientAddrLen);
         if (conn < 0) {
             std::cout << "Error: accept" << std::endl;
             continue;
         }
         inet_ntop(AF_INET, &clientAddr.sin_addr, clientIP, INET_ADDRSTRLEN);
-        std::cout << "...Connect " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
+        std::cout << "->Connect " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
         char buf[1024];
         while (true) {
             memset(buf, 0, sizeof(buf));
@@ -164,7 +164,7 @@ int main() {
                     int idx[30];
                     int params[19];
                     int color_priority[24];                    
-                    std::cout << "=== Put the Parameters ==="<<"\n";
+                    // std::cout << "=== Put the Parameters ==="<<"\n";
                     //std::cout << cdata.c_str() <<"\n";
                     split(mdata[3],_idx,",");
                     std::cout << "== The IDX ==" <<"\n";
@@ -175,10 +175,10 @@ int main() {
                     std::cout << mdata[3].substr(44,11) <<"\n";
                     split(mdata[4],_params,",");
                     std::cout << "== The Parameters ==" <<"\n";
-                    std::cout << mdata[4] <<"\n";
+                    std::cout << " "+mdata[4] <<"\n";
                     split(mdata[5],_color_priority,",");
                     std::cout << "== The Priority ==" <<"\n";
-                    std::cout << mdata[5] <<"\n";
+                    std::cout << " "+ mdata[5] <<"\n";
                     
                     for(int i=0;i<30;i++){
                         idx[i] = atoi(_idx[i].c_str());
@@ -190,14 +190,12 @@ int main() {
                         color_priority[i] = atoi(_color_priority[i].c_str());
                     }
                     
-                    std::cout << "start run ..." << "\n";
+                    std::cout << "Start run ..." << "\n";
                     start_t = time(NULL);
                     p_array0  = kora_solve(p_array0,atoi(mdata[1].c_str()),atoi(mdata[2].c_str()),idx, params,color_priority,{});
                     end_t = time(NULL);
                     double diff = difftime(end_t, start_t);
-                    
-                    std::cout << "Complete SOLVE"<<std::endl;
-                    std::cout<<printf("Spend time = %f",diff)<<std::endl;
+                    std::cout<<printf("Complete Solve, Spend time = %f",diff)<<std::endl;
                     std::cout << (int)(p_array0.ResultPointer[0].path_count)<<"\n";
 
                     std::string tmp = "solve_ok#"+std::to_string(p_array0.result_index)+"#";
@@ -207,13 +205,13 @@ int main() {
                     send(conn,ret,sizeof(ret)/sizeof(char),0);
                     break;
                 }else if(strcmp(mdata[0].c_str(),"xtos_get") == 0){                
-                     char ret[] = "get_start";
+                     char ret[] = "client_get_start";
                     std::cout << ret <<"\n";   
                     int jindex = atoi(mdata[1].c_str());
                     DoraResult *doraResult = &p_array0.ResultPointer[0]; 
                     std::string ret2 = result2char(doraResult);
                      std::cout << "==== The Results is below  =====" <<"\n";   
-                    std::cout << ret2 <<"\n";
+                    std::cout << "     "+ret2 <<"\n";
                     char cstr[ret2.size() + 1];
                     strcpy(cstr, ret2.c_str());                    
                     send(conn,cstr,sizeof(cstr),0);

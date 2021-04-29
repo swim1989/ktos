@@ -62,9 +62,12 @@ std::string result2char(DoraResult *result){
     std::cout << (int)result->path_count << std::endl;
     ret.append("#");
     unsigned char pathc =  result->path_count;
-    for(int i=0;i<(int)pathc;i++){
+    if(result->data->combos[0].mGemCount>0)
+    {
+        for(int i=0;i<(int)pathc;i++){
             ret.append(std::to_string(result->data->dirs[i]));
-            std::cout << std::to_string(result->data->dirs[i]) << std::endl;
+            // std::cout << std::to_string(result->data->dirs[i]) << std::endl;
+        }
     }
     //std::cout << result->path_count << std::endl;
     ret.append("#");

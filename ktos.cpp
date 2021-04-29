@@ -1478,9 +1478,9 @@ DoraResultArrayPointer kora_solve(DoraResultArrayPointer p_array0,int mCols, int
     delete [] points0;
     delete [] current_board;
     delete config;
-    // delete  []params;
-    // delete [] color_priority;
-    // delete [] mIdx;
+    // delete  []params0;
+    // delete [] color_priority0;
+    // delete [] mIdx0;
 
     return p_array0;
 }
